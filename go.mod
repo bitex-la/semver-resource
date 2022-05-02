@@ -1,4 +1,4 @@
-module github.com/concourse/semver-resource
+module github.com/bitex-la/semver-resource
 
 go 1.13
 
