@@ -8,8 +8,8 @@ import (
 
 	"github.com/blang/semver"
 
-	"github.com/concourse/semver-resource/models"
-	"github.com/concourse/semver-resource/version"
+	"github.com/bitex-la/semver-resource/models"
+	"github.com/bitex-la/semver-resource/version"
 )
 
 func main() {
@@ -37,9 +37,8 @@ func main() {
 	}
 
 	bumped := version.BumpFromParams(
-		request.Params.Bump, 
-		request.Params.Pre,
-		request.Params.PreWithoutVersion).Apply(inputVersion)
+		request.Params.Bump,
+		request.Params.Pre).Apply(inputVersion)
 
 	if !bumped.Equals(inputVersion) {
 		fmt.Fprintf(os.Stderr, "bumped locally from %s to %s\n", inputVersion, bumped)

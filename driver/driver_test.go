@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/concourse/semver-resource/driver"
-	"github.com/concourse/semver-resource/models"
+	"github.com/bitex-la/semver-resource/driver"
+	"github.com/bitex-la/semver-resource/models"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

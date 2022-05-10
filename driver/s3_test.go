@@ -2,8 +2,8 @@ package driver_test
 
 import (
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/bitex-la/semver-resource/driver"
 	"github.com/blang/semver"
-	"github.com/concourse/semver-resource/driver"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

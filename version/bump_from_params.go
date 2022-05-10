@@ -1,29 +1,20 @@
 package version
 
-
-
-func BumpFromParams(bumpStr string, preStr string, preWithoutVersion bool) Bump {
+func BumpFromParams(bumpStr string, preStr string) Bump {
 	var semverBump Bump
 
 	switch bumpStr {
-	case "major":
-		semverBump = MajorBump{}
-	case "minor":
-		semverBump = MinorBump{}
-	case "patch":
-		semverBump = PatchBump{}
 	case "final":
 		semverBump = FinalBump{}
+	case "pre-release":
+		semverBump = PreReleaseBump{
+			Pre: preStr,
+		}
 	}
 
-	var bump MultiBump
-	if semverBump != nil {
-		bump = append(bump, semverBump)
+	if semverBump == nil {
+		semverBump = IdentityBump{}
 	}
 
-	if preStr != "" {
-		bump = append(bump, PreBump{preStr, preWithoutVersion})
-	}
-
-	return bump
+	return semverBump
 }

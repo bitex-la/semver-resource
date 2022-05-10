@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bitex-la/semver-resource/driver"
+	"github.com/bitex-la/semver-resource/models"
 	"github.com/blang/semver"
-	"github.com/concourse/semver-resource/driver"
-	"github.com/concourse/semver-resource/models"
 )
 
 func main() {

@@ -8,9 +8,9 @@ import (
 
 	"github.com/blang/semver"
 
-	"github.com/concourse/semver-resource/driver"
-	"github.com/concourse/semver-resource/models"
-	"github.com/concourse/semver-resource/version"
+	"github.com/bitex-la/semver-resource/driver"
+	"github.com/bitex-la/semver-resource/models"
+	"github.com/bitex-la/semver-resource/version"
 )
 
 func main() {
@@ -58,9 +58,8 @@ func main() {
 		}
 	} else if request.Params.Bump != "" || request.Params.Pre != "" {
 		bump := version.BumpFromParams(
-			request.Params.Bump, 
-			request.Params.Pre, 
-			request.Params.PreWithoutVersion)
+			request.Params.Bump,
+			request.Params.Pre)
 
 		newVersion, err = driver.Bump(bump)
 		if err != nil {
