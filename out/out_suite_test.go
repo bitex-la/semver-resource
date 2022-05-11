@@ -23,7 +23,7 @@ var _ = BeforeSuite(func() {
 	if _, err = os.Stat("/opt/resource/out"); err == nil {
 		outPath = "/opt/resource/out"
 	} else {
-		outPath, err = gexec.Build("github.com/concourse/semver-resource/out")
+		outPath, err = gexec.Build("github.com/bitex-la/semver-resource/out")
 		Expect(err).NotTo(HaveOccurred())
 	}
 })

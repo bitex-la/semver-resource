@@ -1,0 +1,68 @@
+name: Generate Semantic Version
+
+on:
+  workflow_call:
+    inputs:
+      artifact_name:
+        required: true
+        type: string
+      initial_version:
+        required: true
+        type: string
+      artifact_versions_repository:
+        required: true
+        type: string
+      bump_type:
+        required: true
+        type: string
+      pre_version:
+        required: true
+        type: string
+    outputs:
+      version:
+        value: ${{ jobs.generate_semver.outputs.version }}
+    secrets:
+      artifact_versions_token:
+        required: true
+      artifact_versions_user:
+        required: true
+      artifact_versions_user_email:
+        required: true
+
+jobs:
+  generate_semver:
+    runs-on: bitex-self-hosted-runner
+    container:
+      image: concourse/semver-resource:1.3.4-alpine
+    outputs:
+      version: ${{ steps.generate_semver.outputs.version }}
+    steps:
+      - name: Calculate semantic version
+        shell: bash
+        run: |
+          set -x
+          PAYLOAD=$(cat <<EOF
+          {
+              "source": {
+                  "initial_version": "${{ inputs.initial_version }}.0",
+                  "driver": "git",
+                  "uri": "${{ inputs.artifact_versions_repository }}",
+                  "branch": "main",
+                  "depth": 1,
+                  "file": "${{ inputs.artifact_name }}-${{ inputs.initial_version }}",
+                  "username": "${{ secrets.artifact_versions_user }}",
+                  "git_user": "${{ secrets.artifact_versions_user_email }}",
+                  "password": "${{ secrets.artifact_versions_token }}",
+                  "commit_message": "bump version of %file% to %version%"
+              },
+              "params": {
+                  "bump": "${{ inputs.bump_type }}",
+                  "pre": "${{ inputs.pre_version }}"
+              }
+          }
+          EOF
+          )
+          
+          GENERATED_VERSION=$(echo "${PAYLOAD}" | /opt/resource/out . | jq -r ".version.number")
+          echo "::set-output name=version::${GENERATED_VERSION}"
+        id: generate_semver

@@ -1,0 +1,55 @@
+name: CI-CD Production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  general_setup:
+    uses: ./.github/workflows/reusable-general-setup.yaml
+
+  test:
+    needs:
+      - general_setup
+    uses: ./.github/workflows/reusable-unit-test.yaml
+    with:
+      artifact_name: ${{ needs.general_setup.outputs.artifact_name }}
+
+  generate_version:
+    needs:
+      - general_setup
+      - test
+    uses: ./.github/workflows/reusable-generate-semver.yaml
+    with:
+      artifact_name: ${{ needs.general_setup.outputs.artifact_name }}
+      initial_version: ${{ needs.general_setup.outputs.initial_version }}
+      artifact_versions_repository: "https://github.com/bitex-la/artifact-versions"
+      bump_type: "patch"
+      pre_version: ""
+    secrets:
+      artifact_versions_user: ${{ secrets.artifact_versions_user }}
+      artifact_versions_user_email: ${{ secrets.artifact_versions_user_email }}
+      artifact_versions_token: ${{ secrets.artifact_versions_token }}
+
+  build_and_publish:
+    needs:
+      - general_setup
+      - generate_version
+    uses: ./.github/workflows/reusable-build-and-publish.yaml
+    with:
+      artifact_name: ${{ needs.general_setup.outputs.artifact_name }}
+      version: ${{ needs.generate_version.outputs.version }}
+    secrets:
+      docker_registry: ${{ secrets.docker_registry }}
+
+  tag:
+    needs:
+      - generate_version
+      - build_and_publish
+    uses: ./.github/workflows/reusable-tag-github-repo.yaml
+    with:
+      version: ${{ needs.generate_version.outputs.version }}
+    secrets:
+      artifact_versions_user: ${{ secrets.artifact_versions_user }}
+      artifact_versions_user_email: ${{ secrets.artifact_versions_user_email }}

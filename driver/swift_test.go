@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bitex-la/semver-resource/models"
+	"github.com/bitex-la/semver-resource/version"
 	"github.com/blang/semver"
-	"github.com/concourse/semver-resource/models"
-	"github.com/concourse/semver-resource/version"
 	"github.com/rackspace/gophercloud"
 	"github.com/rackspace/gophercloud/openstack/objectstorage/v1/containers"
 	"github.com/rackspace/gophercloud/openstack/objectstorage/v1/objects"
@@ -112,7 +112,7 @@ var _ = Describe("Swift", func() {
 		driver, err := newTestSwiftDriver("1.0.0", "testitem2.txt")
 		defer deleteObject("testitem2.txt")
 		Expect(err).To(BeNil())
-		semVer, err := driver.Bump(version.PatchBump{})
+		semVer, err := driver.Bump(version.FinalBump{})
 		Expect(err).To(BeNil())
 		Expect(semVer.String()).To(Equal("1.0.1"))
 	})
@@ -125,7 +125,7 @@ var _ = Describe("Swift", func() {
 		err = driver.Set(semver.Version{Major: 2, Minor: 0, Patch: 10})
 		Expect(err).To(BeNil())
 
-		semVer, err := driver.Bump(version.PatchBump{})
+		semVer, err := driver.Bump(version.FinalBump{})
 		Expect(err).To(BeNil())
 		Expect(semVer.String()).To(Equal("2.0.11"))
 	})

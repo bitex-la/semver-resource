@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"cloud.google.com/go/storage"
+	. "github.com/bitex-la/semver-resource/driver"
+	"github.com/bitex-la/semver-resource/version"
 	"github.com/blang/semver"
-	. "github.com/concourse/semver-resource/driver"
-	"github.com/concourse/semver-resource/version"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -48,7 +48,7 @@ var _ = Describe("GCS Driver", func() {
 			It("writes the bumped version of the contents back to the object", func() {
 				s.Body = "2.6.3"
 
-				newV, err := driver.Bump(version.PatchBump{})
+				newV, err := driver.Bump(version.FinalBump{})
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(newV.String()).To(Equal("2.6.4"))
@@ -68,7 +68,7 @@ var _ = Describe("GCS Driver", func() {
 					Patch: 0,
 				}
 
-				newV, err := driver.Bump(version.PatchBump{})
+				newV, err := driver.Bump(version.FinalBump{})
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(newV.String()).To(Equal("0.0.1"))
@@ -148,7 +148,7 @@ var _ = Describe("GCS Driver", func() {
 				Expect(s.BucketName).To(Equal("fake-bucket"))
 				Expect(s.ObjectName).To(Equal("fake-object"))
 
-				Expect(versions).To(HaveLen(1))				
+				Expect(versions).To(HaveLen(1))
 				Expect(versions[0]).To(Equal(semver.Version{
 					Major: 2,
 					Minor: 6,

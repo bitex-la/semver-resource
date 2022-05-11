@@ -1,0 +1,51 @@
+name: General Setup
+
+on:
+  workflow_call:
+    outputs:
+      short_commit_hash:
+        value: ${{ jobs.general_setup.outputs.short_commit_hash }}
+      artifact_name:
+        value: ${{ jobs.general_setup.outputs.artifact_name }}
+      initial_version:
+        value: ${{ jobs.general_setup.outputs.initial_version }}
+
+jobs:
+  general_setup:
+    runs-on: bitex-self-hosted-runner
+    outputs:
+      short_commit_hash: ${{ steps.general_setup.outputs.short_commit_hash }}
+      artifact_name: ${{ steps.general_setup.outputs.artifact_name }}
+      initial_version: ${{ steps.general_setup.outputs.initial_version }}
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3
+
+      - name: Install yq
+        shell: bash
+        env:
+          INSTALLATION_PATH: "~/bin"
+        run: |
+          mkdir -p ${INSTALLATION_PATH}
+          wget https://github.com/mikefarah/yq/releases/download/v4.24.5/yq_linux_amd64 -O ${INSTALLATION_PATH}/yq
+          chmod +x ${INSTALLATION_PATH}/yq
+
+      - name: General setup
+        shell: bash
+        env:
+          INSTALLATION_PATH: "~/bin"
+        run: |
+          if [ -f .bitex.yaml ]; then
+            echo ".bitex.yaml found"
+          else
+            echo ".bitex.yaml not found"
+            exit 1
+          fi
+
+          ARTIFACT_NAME=$(${INSTALLATION_PATH}/yq eval '.artifact.name' .bitex.yaml)
+          INITIAL_VERSION=$(${INSTALLATION_PATH}/yq eval '.artifact.version' .bitex.yaml)
+
+          echo "::set-output name=short_commit_hash::${GITHUB_SHA:0:7}"
+          echo "::set-output name=artifact_name::${ARTIFACT_NAME}"
+          echo "::set-output name=initial_version::${INITIAL_VERSION}"
+        id: general_setup

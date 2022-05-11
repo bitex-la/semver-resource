@@ -9,8 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/bitex-la/semver-resource/version"
 	"github.com/blang/semver"
-	"github.com/concourse/semver-resource/version"
 )
 
 type Servicer interface {

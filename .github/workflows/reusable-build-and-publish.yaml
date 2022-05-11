@@ -1,0 +1,33 @@
+name: Build and Publish
+
+on:
+  workflow_call:
+    inputs:
+      artifact_name:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+    secrets:
+      docker_registry:
+        required: true
+
+jobs:
+  build_and_publish:
+    runs-on: bitex-self-hosted-runner
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3 
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and publish image to Amazon ECR
+        env:
+          REGISTRY: ${{ secrets.docker_registry }}
+          REPOSITORY: ${{ inputs.artifact_name }}
+          IMAGE_TAG: ${{ inputs.version }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

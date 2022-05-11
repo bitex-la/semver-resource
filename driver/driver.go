@@ -9,9 +9,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/bitex-la/semver-resource/models"
+	"github.com/bitex-la/semver-resource/version"
 	"github.com/blang/semver"
-	"github.com/concourse/semver-resource/models"
-	"github.com/concourse/semver-resource/version"
 )
 
 type Driver interface {
@@ -91,15 +91,15 @@ func FromSource(source models.Source) (Driver, error) {
 		return &GitDriver{
 			InitialVersion: initialVersion,
 
-			URI:                    source.URI,
-			Branch:                 source.Branch,
-			PrivateKey:             source.PrivateKey,
-			Username:               source.Username,
-			Password:               source.Password,
-			File:                   source.File,
-			GitUser:                source.GitUser,
-			CommitMessage:          source.CommitMessage,
-			SkipSSLVerification:    source.SkipSSLVerification,
+			URI:                 source.URI,
+			Branch:              source.Branch,
+			PrivateKey:          source.PrivateKey,
+			Username:            source.Username,
+			Password:            source.Password,
+			File:                source.File,
+			GitUser:             source.GitUser,
+			CommitMessage:       source.CommitMessage,
+			SkipSSLVerification: source.SkipSSLVerification,
 		}, nil
 
 	case models.DriverSwift:

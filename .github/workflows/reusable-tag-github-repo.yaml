@@ -1,0 +1,30 @@
+name: Tag github repository
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+    secrets:
+      artifact_versions_user:
+        required: true
+      artifact_versions_user_email:
+        required: true
+
+jobs:
+  tag_repository:
+    runs-on: bitex-self-hosted-runner
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Tag github repo
+        shell: bash
+        run: |
+          git config --global user.name '${{ secrets.artifact_versions_user }}'
+          git config --global user.email '${{ secrets.artifact_versions_user_email }}'
+          git tag ${{ inputs.version }} -m "Release ${{ inputs.version }}"
+          git push --quiet origin ${{ inputs.version }}

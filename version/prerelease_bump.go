@@ -2,17 +2,16 @@ package version
 
 import "github.com/blang/semver"
 
-type PreBump struct {
+type PreReleaseBump struct {
 	Pre string
-	PreWithoutVersion bool
 }
 
-func (bump PreBump) Apply(v semver.Version) semver.Version {
-	if bump.PreWithoutVersion {
-		v.Pre = []semver.PRVersion{
-			{VersionStr: bump.Pre},
-		}
-	} else if v.Pre == nil || v.Pre[0].VersionStr != bump.Pre {
+func (bump PreReleaseBump) Apply(v semver.Version) semver.Version {
+	if v.Pre == nil {
+		v.Patch++
+	}
+
+	if v.Pre == nil || v.Pre[0].VersionStr != bump.Pre {
 		v.Pre = []semver.PRVersion{
 			{VersionStr: bump.Pre},
 			{VersionNum: 1, IsNum: true},

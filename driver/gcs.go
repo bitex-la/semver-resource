@@ -9,8 +9,8 @@ import (
 	"os"
 
 	"cloud.google.com/go/storage"
+	"github.com/bitex-la/semver-resource/version"
 	"github.com/blang/semver"
-	"github.com/concourse/semver-resource/version"
 	"google.golang.org/api/option"
 )
 
